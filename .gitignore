@@ -1,0 +1,8 @@
+# 배포에 불필요한 원본/작업 파일
+KakaoTalk_Photo_*.jpeg
+font-preview.html
+project-plan-template.md
+*.pdf
+sandbox/
+.omc/
+.DS_Store

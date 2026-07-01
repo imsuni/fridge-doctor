@@ -1,0 +1,684 @@
+{
+  "version": "0.3.0",
+  "last_updated": "2026-07-01",
+  "disclaimer": "본 정보는 일반적으로 알려진 약물-음식 상호작용을 참고용으로 정리한 것입니다. 의학적 진단·처방을 대체하지 않으며, 실제 복약과 식단은 반드시 담당 의사 또는 약사와 상담하세요.",
+  "severity_levels": {
+    "high": "위험 — 드시기 전에 의사나 약사와 상담하세요",
+    "medium": "주의 — 드시는 양과 시간을 조절하세요",
+    "low": "참고 — 평소 드시는 양이라면 괜찮아요"
+  },
+  "medication_timing": {
+    "warfarin": "매일 같은 시간에 복용하고, 비타민K 섭취량을 일정하게 유지하세요.",
+    "levothyroxine": "아침 공복에 물과 함께 복용하고, 30분~1시간 뒤에 식사·커피를 드세요. 칼슘·철분제와는 4시간 간격.",
+    "simvastatin": "콜레스테롤은 밤에 더 만들어지므로 저녁(취침 전) 복용이 효과적입니다.",
+    "atorvastatin": "작용 시간이 길어 하루 중 일정한 시간이면 언제 드셔도 괜찮습니다.",
+    "amlodipine": "하루 한 번 매일 같은 시간에 복용하세요. 식사와는 무관합니다.",
+    "enalapril": "매일 같은 시간에 복용하세요. 식사와는 무관합니다.",
+    "losartan": "매일 같은 시간에 복용하세요. 식사와는 무관합니다.",
+    "tetracycline": "유제품·제산제와 2시간 간격을 두고, 물을 충분히 마시며 복용 직후 바로 눕지 마세요.",
+    "bisphosphonate": "기상 직후 공복에 물 한 컵으로만 복용하고, 이후 30~60분간 눕지 말고 음식·음료를 피하세요.",
+    "maoi": "식사와는 무관하지만, 티라민이 많은 음식(위 주의)을 반드시 피하세요.",
+    "metronidazole": "위장장애가 있으면 음식과 함께 드시고, 복용 중과 복용 후 3일간 금주하세요.",
+    "digoxin": "매일 같은 시간에 복용하고, 고섬유질 식품과는 1~2시간 간격을 두세요.",
+    "betablocker": "매일 같은 시간에 식사와 함께 복용하고, 임의로 중단하지 마세요.",
+    "diuretic": "아침에 복용하면 밤에 화장실 가는 횟수를 줄일 수 있습니다. 칼륨·마그네슘이 빠지므로 과일·채소를 충분히 드세요.",
+    "diuretic_ksparing": "매일 같은 시간에 복용하고, 칼륨 식품 과다 섭취에 주의하세요.",
+    "fluoroquinolone": "유제품·칼슘·철분과는 2시간 간격을 두고 복용하세요.",
+    "nitrate": "식사와 무관하게 복용할 수 있으나, 음주는 피하세요."
+  },
+  "medications": [
+    {
+      "id": "warfarin",
+      "name_ko": "와파린",
+      "name_en": "Warfarin",
+      "category": "항응고제(혈액응고 억제)",
+      "group": "항응고제",
+      "brand_examples": [
+        "쿠마딘"
+      ],
+      "interactions": [
+        {
+          "ingredient_label": "비타민K가 풍부한 녹색 채소",
+          "match_keywords": [
+            "시금치",
+            "케일",
+            "브로콜리",
+            "양배추",
+            "상추",
+            "낫토",
+            "청경채",
+            "파슬리",
+            "아스파라거스",
+            "방울양배추",
+            "무청",
+            "콜라드",
+            "녹차",
+            "녹색채소"
+          ],
+          "severity": "high",
+          "effect": "비타민K는 와파린의 항응고 효과를 약화시켜 혈전 위험을 높일 수 있습니다.",
+          "advice": "완전히 끊기보다 '일정한 양'을 꾸준히 드세요. 평소 섭취량을 급격히 늘리거나 줄이지 마세요."
+        },
+        {
+          "ingredient_label": "마늘·생강·인삼 등 (다량·보충제)",
+          "match_keywords": [
+            "마늘",
+            "생강",
+            "인삼",
+            "홍삼",
+            "은행",
+            "당귀"
+          ],
+          "severity": "medium",
+          "effect": "마늘·생강·인삼·은행 등을 다량(특히 건강기능식품)으로 섭취하면 항응고 작용이 강해져 출혈 위험이 커질 수 있습니다.",
+          "advice": "보충제 형태의 다량 섭취를 피하고, 병용 전 의사·약사와 상담하세요."
+        },
+        {
+          "ingredient_label": "자몽 · 자몽주스",
+          "match_keywords": [
+            "자몽",
+            "자몽주스"
+          ],
+          "severity": "medium",
+          "effect": "자몽이 약물 대사를 방해해 와파린 혈중 농도를 높여 출혈 위험을 키울 수 있습니다.",
+          "advice": "자몽 및 자몽 함유 음료는 피하는 것이 안전합니다."
+        },
+        {
+          "ingredient_label": "크랜베리 · 알코올",
+          "match_keywords": [
+            "크랜베리",
+            "크랜베리주스",
+            "술",
+            "맥주",
+            "와인",
+            "소주"
+          ],
+          "severity": "medium",
+          "effect": "크랜베리와 알코올은 와파린의 항응고 작용을 강화해 출혈 위험을 높일 수 있습니다.",
+          "advice": "다량 섭취를 피하고 음주는 자제하세요."
+        }
+      ]
+    },
+    {
+      "id": "levothyroxine",
+      "name_ko": "레보티록신(갑상선호르몬제)",
+      "name_en": "Levothyroxine",
+      "category": "갑상선호르몬 보충제",
+      "group": "갑상선약",
+      "brand_examples": [
+        "씬지로이드"
+      ],
+      "interactions": [
+        {
+          "ingredient_label": "칼슘·철분이 많은 식품(유제품 등)",
+          "match_keywords": [
+            "우유",
+            "치즈",
+            "요거트",
+            "멸치",
+            "두유",
+            "칼슘",
+            "철분",
+            "달걀노른자"
+          ],
+          "severity": "high",
+          "effect": "칼슘과 철분은 레보티록신의 흡수를 크게 떨어뜨려 약효를 약화시킵니다.",
+          "advice": "약 복용 후 최소 4시간 간격을 두고 드세요. 보통 공복에 약을 먹는 것이 좋습니다."
+        },
+        {
+          "ingredient_label": "대두(콩)·호두 등",
+          "match_keywords": [
+            "콩",
+            "두부",
+            "두유",
+            "된장",
+            "콩나물",
+            "대두",
+            "호두",
+            "목화씨"
+          ],
+          "severity": "medium",
+          "effect": "대두 단백질과 호두·목화씨 등은 갑상선호르몬제의 흡수를 방해할 수 있습니다.",
+          "advice": "약 복용과 시간 간격을 두고 드세요."
+        },
+        {
+          "ingredient_label": "요오드 과다 식품(해조류)",
+          "match_keywords": [
+            "다시마",
+            "미역",
+            "김",
+            "톳",
+            "해조류",
+            "요오드"
+          ],
+          "severity": "medium",
+          "effect": "과도한 요오드는 갑상선 기능에 영향을 주어 호르몬 조절을 어렵게 할 수 있습니다.",
+          "advice": "해조류를 과다하게 섭취하지 않도록 주의하세요."
+        },
+        {
+          "ingredient_label": "커피·자몽",
+          "match_keywords": [
+            "커피",
+            "원두",
+            "에스프레소",
+            "자몽",
+            "자몽주스"
+          ],
+          "severity": "low",
+          "effect": "커피와 자몽주스는 레보티록신 흡수를 지연시켜 약효를 떨어뜨릴 수 있습니다.",
+          "advice": "약 복용 후 30분~1시간 뒤에 드세요."
+        }
+      ]
+    },
+    {
+      "id": "simvastatin",
+      "name_ko": "심바스타틴(고지혈증약)",
+      "name_en": "Simvastatin",
+      "category": "스타틴 계열 콜레스테롤 저하제",
+      "group": "고지혈증약",
+      "brand_examples": [
+        "조코"
+      ],
+      "interactions": [
+        {
+          "ingredient_label": "자몽 · 자몽주스",
+          "match_keywords": [
+            "자몽",
+            "자몽주스"
+          ],
+          "severity": "high",
+          "effect": "자몽은 스타틴 대사를 억제해 혈중 농도를 크게 높이고 근육통·횡문근융해증 위험을 키웁니다.",
+          "advice": "자몽 및 자몽 함유 음료는 피하세요. (특히 심바스타틴은 영향이 큼)"
+        }
+      ]
+    },
+    {
+      "id": "atorvastatin",
+      "name_ko": "아토르바스타틴(고지혈증약)",
+      "name_en": "Atorvastatin",
+      "category": "스타틴 계열 콜레스테롤 저하제",
+      "group": "고지혈증약",
+      "brand_examples": [
+        "리피토"
+      ],
+      "interactions": [
+        {
+          "ingredient_label": "자몽 · 자몽주스",
+          "match_keywords": [
+            "자몽",
+            "자몽주스"
+          ],
+          "severity": "medium",
+          "effect": "다량의 자몽은 아토르바스타틴 혈중 농도를 높여 근육 관련 부작용 위험을 키울 수 있습니다.",
+          "advice": "자몽 섭취를 가급적 피하거나 소량으로 제한하세요."
+        }
+      ]
+    },
+    {
+      "id": "amlodipine",
+      "name_ko": "암로디핀(혈압약)",
+      "name_en": "Amlodipine",
+      "category": "칼슘채널차단제(혈압 강하)",
+      "group": "혈압약",
+      "brand_examples": [
+        "노바스크"
+      ],
+      "interactions": [
+        {
+          "ingredient_label": "자몽 · 자몽주스",
+          "match_keywords": [
+            "자몽",
+            "자몽주스"
+          ],
+          "severity": "low",
+          "effect": "암로디핀은 같은 계열 중 자몽 영향이 작은 편이지만, 다량 섭취 시 혈압이 평소보다 더 떨어질 수 있습니다.",
+          "advice": "적당량은 대체로 괜찮지만, 자몽을 많이 드시는 경우에는 주의하세요."
+        }
+      ]
+    },
+    {
+      "id": "enalapril",
+      "name_ko": "에날라프릴(혈압약, ACE억제제)",
+      "name_en": "Enalapril",
+      "category": "ACE 억제제(혈압 강하)",
+      "group": "혈압약",
+      "brand_examples": [
+        "레니프릴"
+      ],
+      "interactions": [
+        {
+          "ingredient_label": "칼륨이 풍부한 식품 · 저염소금",
+          "match_keywords": [
+            "바나나",
+            "토마토",
+            "감자",
+            "고구마",
+            "아보카도",
+            "오렌지",
+            "시금치",
+            "저염소금",
+            "소금대체제",
+            "칼륨",
+            "매실"
+          ],
+          "severity": "high",
+          "effect": "ACE 억제제는 체내 칼륨을 높이는데, 칼륨 식품을 과다 섭취하면 고칼륨혈증(부정맥 위험)이 생길 수 있습니다.",
+          "advice": "칼륨이 많은 식품과 '저염(칼륨) 소금'의 과다 섭취를 피하세요."
+        }
+      ]
+    },
+    {
+      "id": "losartan",
+      "name_ko": "로사르탄(혈압약, ARB)",
+      "name_en": "Losartan",
+      "category": "안지오텐신수용체차단제(혈압 강하)",
+      "group": "혈압약",
+      "brand_examples": [
+        "코자"
+      ],
+      "interactions": [
+        {
+          "ingredient_label": "칼륨이 풍부한 식품 · 저염소금",
+          "match_keywords": [
+            "바나나",
+            "토마토",
+            "감자",
+            "고구마",
+            "아보카도",
+            "오렌지",
+            "시금치",
+            "저염소금",
+            "소금대체제",
+            "칼륨",
+            "매실"
+          ],
+          "severity": "medium",
+          "effect": "로사르탄도 칼륨 수치를 높일 수 있어, 칼륨 식품 과다 섭취 시 고칼륨혈증 위험이 있습니다.",
+          "advice": "칼륨 식품과 칼륨 함유 소금 대체제의 과다 섭취에 주의하세요."
+        }
+      ]
+    },
+    {
+      "id": "tetracycline",
+      "name_ko": "테트라사이클린계 항생제",
+      "name_en": "Tetracyclines",
+      "category": "항생제",
+      "group": "항생제",
+      "brand_examples": [
+        "독시사이클린",
+        "미노사이클린"
+      ],
+      "interactions": [
+        {
+          "ingredient_label": "칼슘·철분이 많은 식품(유제품 등)",
+          "match_keywords": [
+            "우유",
+            "치즈",
+            "요거트",
+            "멸치",
+            "두유",
+            "칼슘",
+            "철분"
+          ],
+          "severity": "high",
+          "effect": "칼슘·철분·마그네슘이 항생제와 결합(킬레이트)해 흡수를 크게 떨어뜨려 약효가 약해질 수 있습니다.",
+          "advice": "유제품·철분이 많은 식품은 약 복용 2시간 전후로는 피하세요."
+        }
+      ]
+    },
+    {
+      "id": "bisphosphonate",
+      "name_ko": "비스포스포네이트(골다공증약)",
+      "name_en": "Bisphosphonates",
+      "category": "골흡수 억제제",
+      "group": "골다공증약",
+      "brand_examples": [
+        "알렌드로네이트",
+        "리세드로네이트"
+      ],
+      "interactions": [
+        {
+          "ingredient_label": "모든 음식·음료(특히 칼슘·카페인·탄산·고지방)",
+          "match_keywords": [
+            "우유",
+            "치즈",
+            "요거트",
+            "멸치",
+            "두유",
+            "칼슘",
+            "커피",
+            "콜라",
+            "홍차",
+            "탄산음료",
+            "탄산",
+            "오렌지",
+            "오렌지주스",
+            "주스",
+            "고지방"
+          ],
+          "severity": "high",
+          "effect": "음식·음료, 특히 칼슘이나 미네랄이 든 것은 비스포스포네이트의 흡수를 거의 막아 약효를 없앨 수 있습니다. 커피·콜라·홍차 등 카페인 음료, 탄산음료, 고지방 식사도 흡수를 크게 떨어뜨립니다.",
+          "advice": "아침 공복에 '물'로만 복용하고, 이후 30분~1시간은 음식·음료(카페인·탄산·우유·주스 포함)를 피하세요."
+        }
+      ]
+    },
+    {
+      "id": "maoi",
+      "name_ko": "MAO 억제제",
+      "name_en": "MAOI",
+      "category": "항우울제·파킨슨병 치료제",
+      "group": "정신과약",
+      "brand_examples": [
+        "셀레길린",
+        "모클로베미드"
+      ],
+      "interactions": [
+        {
+          "ingredient_label": "티라민이 풍부한 숙성·발효 식품",
+          "match_keywords": [
+            "숙성치즈",
+            "치즈",
+            "된장",
+            "청국장",
+            "간장",
+            "살라미",
+            "소시지",
+            "가공육",
+            "절임",
+            "발효식품",
+            "김치",
+            "청어",
+            "누에콩",
+            "파바"
+          ],
+          "severity": "high",
+          "effect": "티라민이 많은 식품은 MAO 억제제와 만나면 혈압이 갑자기 치솟는 위험한 반응(고혈압 위기)을 일으킬 수 있습니다.",
+          "advice": "숙성치즈·발효식품·가공육·김치 등 티라민이 많은 음식은 피하세요."
+        },
+        {
+          "ingredient_label": "맥주·와인 등 주류",
+          "match_keywords": [
+            "맥주",
+            "와인",
+            "술",
+            "소주"
+          ],
+          "severity": "high",
+          "effect": "특히 생맥주·레드와인 등은 티라민이 많아 위험한 혈압 상승을 일으킬 수 있습니다.",
+          "advice": "음주를 피하세요."
+        },
+        {
+          "ingredient_label": "과숙 과일·초콜릿·건과일 등",
+          "match_keywords": [
+            "바나나",
+            "아보카도",
+            "초콜릿",
+            "건과일",
+            "라즈베리"
+          ],
+          "severity": "medium",
+          "effect": "많이 익은 바나나·아보카도, 초콜릿·건과일에는 티라민이 늘어 혈압에 영향을 줄 수 있습니다.",
+          "advice": "과도하게 익은 과일과 초콜릿·건과일의 과량 섭취를 피하세요."
+        }
+      ]
+    },
+    {
+      "id": "metronidazole",
+      "name_ko": "메트로니다졸(항생제)",
+      "name_en": "Metronidazole",
+      "category": "항생제·항원충제",
+      "group": "항생제",
+      "brand_examples": [
+        "후라시닐"
+      ],
+      "interactions": [
+        {
+          "ingredient_label": "알코올(술 전반)",
+          "match_keywords": [
+            "술",
+            "맥주",
+            "와인",
+            "소주",
+            "알코올"
+          ],
+          "severity": "high",
+          "effect": "메트로니다졸과 알코올을 함께 섭취하면 구역·구토·홍조·심장 두근거림 등 디설피람 유사 반응이 나타날 수 있습니다.",
+          "advice": "복용 중은 물론 복용을 마친 뒤에도 최소 3일간 금주하세요."
+        }
+      ]
+    },
+    {
+      "id": "digoxin",
+      "name_ko": "디곡신(강심제)",
+      "name_en": "Digoxin",
+      "category": "강심배당체(심부전·부정맥)",
+      "group": "심장약",
+      "brand_examples": [
+        "디고신"
+      ],
+      "interactions": [
+        {
+          "ingredient_label": "감초·감초차",
+          "match_keywords": [
+            "감초",
+            "감초차"
+          ],
+          "severity": "high",
+          "effect": "감초는 체내 칼륨을 떨어뜨려 디곡신 독성(부정맥 등) 위험을 높일 수 있습니다.",
+          "advice": "감초가 든 차·한약·과자 등을 피하세요."
+        },
+        {
+          "ingredient_label": "고섬유질 식품(통곡물 등)",
+          "match_keywords": [
+            "통곡물",
+            "시리얼",
+            "밀기울",
+            "식이섬유",
+            "고섬유질"
+          ],
+          "severity": "medium",
+          "effect": "식이섬유가 매우 많은 식품은 디곡신 흡수를 일부 줄일 수 있습니다.",
+          "advice": "고섬유질 식품과 약 복용 시간을 1~2시간 정도 띄우세요."
+        },
+        {
+          "ingredient_label": "센나(차풀잎)·세인트존스워트",
+          "match_keywords": [
+            "센나",
+            "차풀잎",
+            "세인트존스워트"
+          ],
+          "severity": "medium",
+          "effect": "센나(변비약 성분)와 세인트존스워트는 디곡신의 흡수·효능을 떨어뜨릴 수 있습니다.",
+          "advice": "해당 성분이 든 하제·건강기능식품 섭취 시 주의하고 상담하세요."
+        }
+      ]
+    },
+    {
+      "id": "betablocker",
+      "name_ko": "베타차단제(혈압약)",
+      "name_en": "Beta blockers",
+      "category": "교감신경 차단제(혈압·협심증)",
+      "group": "혈압약",
+      "brand_examples": [
+        "메토프롤롤",
+        "카르베딜롤",
+        "아테놀롤"
+      ],
+      "interactions": [
+        {
+          "ingredient_label": "고기 등 고단백 식사",
+          "match_keywords": [
+            "고기",
+            "육류",
+            "소고기",
+            "닭고기",
+            "돼지고기"
+          ],
+          "severity": "medium",
+          "effect": "메토프롤롤·카르베딜롤은 고기와 함께 복용하면 약효가 증가해 어지럼·저혈압이 생길 수 있습니다.",
+          "advice": "카르베딜롤·메토프롤롤은 식사와 함께 일정하게 복용하고, 임의로 중단하지 마세요."
+        },
+        {
+          "ingredient_label": "알코올(술)",
+          "match_keywords": [
+            "술",
+            "맥주",
+            "와인",
+            "소주",
+            "알코올"
+          ],
+          "severity": "medium",
+          "effect": "알코올은 혈압 강하 효과를 증강시켜 이상반응을 일으킬 수 있습니다.",
+          "advice": "음주를 피하세요."
+        }
+      ]
+    },
+    {
+      "id": "diuretic",
+      "name_ko": "이뇨제(치아지드·루프계)",
+      "name_en": "Diuretics",
+      "category": "이뇨제(혈압·부종)",
+      "group": "혈압약",
+      "brand_examples": [
+        "히드로클로로티아지드",
+        "푸로세미드"
+      ],
+      "interactions": [
+        {
+          "ingredient_label": "알로에(다량)",
+          "match_keywords": [
+            "알로에"
+          ],
+          "severity": "medium",
+          "effect": "치아지드·루프 이뇨제는 칼륨을 배출시키는데, 알로에를 함께 다량 섭취하면 칼륨이 지나치게 감소할 수 있습니다.",
+          "advice": "알로에 등 완하 작용이 있는 식품의 과량 섭취를 피하세요."
+        },
+        {
+          "ingredient_label": "화학조미료(MSG)",
+          "match_keywords": [
+            "MSG",
+            "화학조미료",
+            "msg"
+          ],
+          "severity": "low",
+          "effect": "치아지드계 이뇨제는 MSG 작용을 증가시켜 두통·어지럼·가슴통증을 일으킬 수 있습니다.",
+          "advice": "MSG가 많은 음식의 과량 섭취에 주의하세요."
+        },
+        {
+          "ingredient_label": "알코올(술)",
+          "match_keywords": [
+            "술",
+            "맥주",
+            "와인",
+            "소주",
+            "알코올"
+          ],
+          "severity": "medium",
+          "effect": "알코올은 혈압 강하 효과를 증강시켜 기립성 저혈압을 초래할 수 있습니다.",
+          "advice": "음주를 피하세요."
+        }
+      ]
+    },
+    {
+      "id": "diuretic_ksparing",
+      "name_ko": "칼륨보존성 이뇨제",
+      "name_en": "K-sparing diuretics",
+      "category": "이뇨제(혈압·부종)",
+      "group": "혈압약",
+      "brand_examples": [
+        "스피로노락톤",
+        "트리암테렌"
+      ],
+      "interactions": [
+        {
+          "ingredient_label": "칼륨이 풍부한 식품 · 저염소금",
+          "match_keywords": [
+            "바나나",
+            "토마토",
+            "감자",
+            "고구마",
+            "아보카도",
+            "오렌지",
+            "시금치",
+            "저염소금",
+            "소금대체제",
+            "칼륨",
+            "매실"
+          ],
+          "severity": "high",
+          "effect": "칼륨보존성 이뇨제는 칼륨을 몸에 남기므로, 칼륨 식품을 과다 섭취하면 고칼륨혈증(부정맥 위험)이 생길 수 있습니다.",
+          "advice": "칼륨이 많은 식품과 '저염(칼륨) 소금'의 과다 섭취를 피하세요."
+        }
+      ]
+    },
+    {
+      "id": "fluoroquinolone",
+      "name_ko": "퀴놀론계 항생제",
+      "name_en": "Fluoroquinolones",
+      "category": "항생제",
+      "group": "항생제",
+      "brand_examples": [
+        "시프로플록사신",
+        "레보플록사신"
+      ],
+      "interactions": [
+        {
+          "ingredient_label": "유제품·칼슘·철분",
+          "match_keywords": [
+            "우유",
+            "치즈",
+            "요거트",
+            "멸치",
+            "두유",
+            "칼슘",
+            "철분"
+          ],
+          "severity": "high",
+          "effect": "우유 등 유제품과 칼슘·철분은 퀴놀론과 결합(킬레이트)해 흡수를 크게 떨어뜨립니다.",
+          "advice": "약 복용 전후 2시간 이내에는 유제품·칼슘·철분 식품을 피하세요."
+        },
+        {
+          "ingredient_label": "카페인(커피 등)",
+          "match_keywords": [
+            "커피",
+            "원두",
+            "에스프레소",
+            "카페인",
+            "콜라",
+            "홍차",
+            "에너지음료"
+          ],
+          "severity": "medium",
+          "effect": "시프로플록사신은 카페인 배설을 억제해 심장 두근거림·불면·신경과민을 일으킬 수 있습니다.",
+          "advice": "복용 중 카페인 섭취를 줄이세요."
+        }
+      ]
+    },
+    {
+      "id": "nitrate",
+      "name_ko": "질산염 혈관확장제(협심증약)",
+      "name_en": "Nitrates",
+      "category": "심장약(협심증·부정맥)",
+      "group": "심장약",
+      "brand_examples": [
+        "이소소르비드",
+        "니트로글리세린"
+      ],
+      "interactions": [
+        {
+          "ingredient_label": "알코올(술)",
+          "match_keywords": [
+            "술",
+            "맥주",
+            "와인",
+            "소주",
+            "알코올"
+          ],
+          "severity": "medium",
+          "effect": "알코올은 혈관확장제의 혈압강하 작용을 증강시켜 위험한 저혈압을 일으킬 수 있습니다.",
+          "advice": "음주를 피하세요."
+        }
+      ]
+    }
+  ]
+}

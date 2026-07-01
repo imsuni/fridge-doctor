@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>우리집 냉장고 주치의</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poor+Story&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --high: #d35450;
+    --medium: #e08a3c;
+    --low: #6fa86b;
+    --bg: #faf4ec;
+    --card: #fffdf9;
+    --line: #ece0d2;
+    --text: #574a42;
+    --muted: #9b8a7d;
+    --accent: #9a86c4;
+    --accent-dark: #7d68b0;
+    --accent-soft: #f0ebf9;
+  }
+  * { box-sizing: border-box; }
+
+  /* 냉장고 문 열림 인트로 애니메이션 */
+  .fridge-doors { position: fixed; inset: 0; z-index: 9999; perspective: 1700px; pointer-events: none; animation: introFade .35s ease 2.75s forwards; }
+  .fridge-light { position: absolute; inset: 0; opacity: 0;
+    background: radial-gradient(ellipse 60% 70% at 50% 45%, rgba(255,253,244,.95), rgba(255,250,231,.5) 55%, rgba(255,250,231,0) 80%);
+    animation: fridgeGlow 2.6s ease .3s forwards; }
+  @keyframes fridgeGlow { 0% { opacity: 0; } 30% { opacity: .85; } 65% { opacity: .4; } 100% { opacity: 0; } }
+  .fridge-doors .door {
+    position: absolute; top: 0; height: 100%; width: 50%;
+    background: linear-gradient(90deg, #ece2ad, #f9f1cb 30%, #f6edc1 60%, #fbf6da 85%, #ece2ad);
+    box-shadow: inset 0 0 90px rgba(120,100,60,.10), inset 0 0 0 1px rgba(255,255,255,.35);
+    backface-visibility: hidden;
+  }
+  .fridge-doors .door.left { left: 0; transform-origin: left center; border-radius: 0 18px 18px 0; animation: doorOpenL 2.6s cubic-bezier(.6,0,.25,1) .3s forwards; }
+  .fridge-doors .door.right { right: 0; transform-origin: right center; border-radius: 18px 0 0 18px; animation: doorOpenR 2.6s cubic-bezier(.6,0,.25,1) .3s forwards; }
+  @keyframes doorOpenL { from { transform: rotateY(0); } to { transform: rotateY(-128deg); } }
+  @keyframes doorOpenR { from { transform: rotateY(0); } to { transform: rotateY(128deg); } }
+  @keyframes introFade { to { opacity: 0; visibility: hidden; } }
+  .door-handle { position: absolute; top: 33%; height: 30%; width: 10px; border-radius: 6px;
+    background: linear-gradient(90deg, #8f959a, #eef1f2 45%, #9aa0a5); box-shadow: 0 3px 7px rgba(0,0,0,.32); }
+  .door.left .door-handle { right: 14px; }
+  .door.right .door-handle { left: 14px; }
+  /* 냉장고 자석·메모·사진 (문에 부착) */
+  .deco { position: absolute; backface-visibility: hidden; }
+  .memo { width: 140px; min-height: 84px; padding: 12px; font-family: "Poor Story", cursive; font-size: 1.35rem; line-height: 1.3; color: #46381c;
+    box-shadow: 2px 6px 11px rgba(0,0,0,.18); border-radius: 2px; }
+  .memo-y { background: #fdf1a3; transform: rotate(-4deg); }
+  .memo-p { background: #f9cad5; transform: rotate(3deg); }
+  .memo::before { content: ""; position: absolute; top: -8px; left: 50%; transform: translateX(-50%) rotate(-6deg);
+    width: 36px; height: 15px; background: rgba(255,255,255,.55); box-shadow: 0 1px 2px rgba(0,0,0,.1); }
+  .photo { width: 68px; height: 80px; background: #fff; padding: 6px 6px 18px; box-shadow: 2px 5px 10px rgba(0,0,0,.2);
+    transform: rotate(4deg); display: flex; align-items: center; justify-content: center; font-size: 1.7rem; }
+  /* 복약 체크 — 폴라로이드 사진 느낌 */
+  .polaroid { width: 96px; background: #fff; padding: 8px 8px 6px; box-shadow: 2px 6px 12px rgba(0,0,0,.2); transform: rotate(-3deg); }
+  .pola-cal { border-radius: 3px; background: #fdf3f4; overflow: hidden; text-align: center; padding-bottom: 8px; }
+  .cal-top { display: block; background: #e2695f; color: #fff; font-size: 0.62rem; font-weight: 800; letter-spacing: 1px; padding: 3px 0; }
+  .cal-day { display: block; font-size: 1.95rem; font-weight: 800; color: #4a4a4a; line-height: 1; margin-top: 5px; }
+  .cal-chk { display: block; color: #4faf4a; font-weight: 800; font-size: 1.05rem; line-height: 1; margin-top: 2px; }
+  .pola-cap { font-family: "Poor Story", cursive; font-size: 1.25rem; color: #46381c; text-align: center; margin-top: 5px; }
+  .mags { display: flex; gap: 8px; align-items: flex-start; }
+  .mag { font-family: "Arial Rounded MT Bold", "Trebuchet MS", system-ui, sans-serif; font-weight: 900;
+    font-size: 2.8rem; line-height: 1; display: inline-block;
+    text-shadow: 0 1px 0 rgba(255,255,255,.5), 1px 2px 1px rgba(0,0,0,.2), 0 4px 5px rgba(0,0,0,.28);
+    -webkit-text-stroke: 1.5px rgba(0,0,0,.06); }
+  .mag.red { color: #e2402f; } .mag.blue { color: #2f7fd0; } .mag.green { color: #4faf4a; }
+  .mag.yellow { color: #f2b30a; } .mag.pink { color: #e86aa0; } .mag.teal { color: #23a3a0; }
+  /* 손으로 붙인 듯 살짝 흐르는 배열 */
+  .mags .mag:nth-child(1) { transform: rotate(-9deg) translateY(3px); }
+  .mags .mag:nth-child(2) { transform: rotate(6deg) translateY(-4px); }
+  .mags .mag:nth-child(3) { transform: rotate(-5deg) translateY(5px); }
+  .mags .mag:nth-child(4) { transform: rotate(8deg) translateY(-2px); }
+  .ctrl-panel { position: absolute; top: 24%; left: 12%; width: 128px; height: 72px;
+    background: linear-gradient(#eaeef1, #d6dbde); border: 1px solid #b6bcc1; border-radius: 8px;
+    box-shadow: inset 0 1px 3px rgba(255,255,255,.7), 0 1px 3px rgba(0,0,0,.15); }
+  .ctrl-panel::before { content: ""; position: absolute; top: 16px; left: 14px; width: 30px; height: 20px; border-radius: 3px; background: #2f3a33; box-shadow: 44px 0 0 #2f3a33; }
+  .fridge-doors .brand { position: absolute; top: 40px; left: 40px; font-size: 1.25rem; font-weight: 800; color: #9a8f74; letter-spacing: 3px; }
+  @media (prefers-reduced-motion: reduce) { .fridge-doors { display: none; } }
+  @media (max-width: 480px) {
+    .hero h1 { font-size: 1.45rem; }
+    .mag { font-size: 2.1rem; }
+    .mags { gap: 5px; }
+    .memo { width: 120px; font-size: 1.2rem; }
+    .polaroid { width: 84px; }
+    .actions { flex-wrap: wrap; }
+    .count { margin-left: 0; width: 100%; }
+  }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 16px 16px 64px; }
+
+  /* 헤더 히어로 — 빈티지 부엌 일러스트 (이미지 ①) */
+  .hero {
+    position: relative; margin: 0 0 24px; min-height: 178px;
+    border-radius: 18px; overflow: hidden;
+    background: linear-gradient(180deg, #f7d8de 0%, #fbe4e9 55%, #fdeef1 100%);
+    padding: 92px 0 0; display: flex; align-items: flex-end;
+    box-shadow: 0 6px 20px rgba(150,110,120,.18);
+  }
+  .hero::before {  /* 크림색 물결 커튼 (이미지 ①에서 추출·리컬러) */
+    content: ""; position: absolute; top: 0; left: 0; right: 0; height: 84px;
+    background-image: url("curtain.png");
+    background-repeat: repeat-x; background-size: auto 84px;
+    filter: drop-shadow(0 3px 3px rgba(150,110,120,.22));
+  }
+  .hero-inner { position: relative; z-index: 1; padding: 0 22px 20px; }
+  .hero h1 { font-size: 1.7rem; margin: 0 0 4px; color: #8a4f5b; text-shadow: 0 1px 2px rgba(255,255,255,.6); }
+  .hero p { color: #a86f7a; margin: 0; font-size: 0.92rem; font-weight: 600; text-shadow: 0 1px 2px rgba(255,255,255,.55); }
+
+  .disclaimer {
+    background: #fff7e6;
+    border: 1px solid #ffe0a3;
+    color: #8a6d3b;
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-size: 0.82rem;
+    margin-bottom: 24px;
+  }
+
+  .legend {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    margin: -8px 0 24px;
+  }
+  .legend-item {
+    display: flex; align-items: center; gap: 7px;
+    background: var(--card); border: 1px solid var(--line); border-radius: 999px;
+    padding: 5px 12px 5px 8px; font-size: 0.8rem; color: var(--muted);
+  }
+  .legend-dot { width: 11px; height: 11px; border-radius: 50%; flex: none; }
+  .legend-dot.high { background: var(--high); }
+  .legend-dot.medium { background: var(--medium); }
+  .legend-dot.low { background: var(--low); }
+  .legend-item b { color: var(--text); font-weight: 700; }
+
+  .panel {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 14px rgba(140,110,80,.07);
+  }
+  /* 냉장고 모양 음식 선택 (이미지 ② 분위기) */
+  .fridge {
+    position: relative; margin-bottom: 16px;
+    border: 6px solid #f3d2da; border-radius: 18px;
+    background: linear-gradient(180deg, #fdeef1, #fbe4e9);
+    padding: 14px 12px 12px;
+    box-shadow: inset 0 2px 12px rgba(190,130,145,.18), 0 5px 16px rgba(150,110,115,.12);
+  }
+  .fridge::before {  /* 냉장고 문 손잡이 */
+    content: ""; position: absolute; top: 26px; bottom: 26px; left: -3px; width: 6px;
+    background: #e7b6c1; border-radius: 6px;
+  }
+  .fridge-magnet {  /* 이미지 ②를 문에 붙인 사진 마그넷 */
+    position: absolute; top: -16px; right: 16px; width: 50px; height: auto;
+    border: 3px solid #fff; border-radius: 4px; transform: rotate(5deg); z-index: 2;
+    box-shadow: 0 3px 8px rgba(120,80,90,.28);
+  }
+  .fridge-cap { text-align: center; font-size: .8rem; color: #c08894; font-weight: 700; margin: 0 0 12px; }
+  .fridge .food-group {
+    background: #fff8f9; border: 1px solid #f6dbe1; border-radius: 12px;
+    padding: 10px 12px 12px; margin-bottom: 10px;
+    box-shadow: 0 3px 0 #f0ccd4;   /* 선반 모서리 느낌 */
+  }
+  .fridge .food-group:last-child { margin-bottom: 0; }
+  .fridge .food-group h3 {
+    display: inline-block; background: #f5c6d0; color: #7e4a55;
+    padding: 3px 13px; border-radius: 999px; font-weight: 700; margin: 0 0 10px;
+  }
+  .step-label {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-weight: 700; font-size: 1.05rem; margin: 0 0 14px;
+  }
+  .step-num {
+    background: var(--accent); color: #fff; width: 24px; height: 24px;
+    border-radius: 50%; display: grid; place-items: center; font-size: 0.85rem;
+  }
+
+  .hint-inline { font-weight: 400; font-size: 0.82rem; color: var(--muted); }
+  .step-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .step-head .step-label { margin: 0; }
+  .lang-toggle {
+    background: #fff; border: 1px solid var(--line); color: var(--muted);
+    border-radius: 999px; padding: 5px 13px; font-size: 0.82rem; cursor: pointer; white-space: nowrap;
+  }
+  .lang-toggle:hover { border-color: var(--accent); color: var(--accent-dark); }
+  .lang-toggle.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent-dark); font-weight: 700; }
+  .med-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 8px; }
+  .med-chip {
+    border: 1.5px solid var(--line); border-radius: 10px; background: #fff;
+    padding: 10px 12px; cursor: pointer; user-select: none; transition: all .12s ease;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .med-chip:hover { border-color: #d8c9ba; }
+  .med-chip.selected { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 1px var(--accent) inset; }
+  .med-chip .check {
+    width: 18px; height: 18px; border-radius: 5px; border: 1.5px solid #c2ccd9;
+    flex: none; display: grid; place-items: center; font-size: 0.72rem; color: #fff;
+  }
+  .med-chip.selected .check { background: var(--accent); border-color: var(--accent); }
+  .med-chip .mname { font-size: 0.9rem; font-weight: 600; }
+  .med-meta { margin-top: 10px; font-size: 0.85rem; color: var(--muted); }
+  .age-row { margin-top: 14px; display: flex; align-items: center; gap: 10px; }
+  .age-row label { font-size: 0.9rem; font-weight: 600; color: var(--text); }
+  .age-row input {
+    width: 120px; padding: 9px 12px; font-size: 0.95rem;
+    border: 1px solid #d8c9ba; border-radius: 10px; background: #fff;
+  }
+  .age-row input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px #e0d6f3; }
+  .elder-note {
+    background: #fef3e7; border: 1px solid #f6d6a8; color: #8a5a1f;
+    border-radius: 10px; padding: 11px 14px; font-size: 0.9rem; margin-bottom: 14px;
+  }
+  .med-tag {
+    display: inline-block; font-size: 0.78rem; font-weight: 700; color: var(--accent);
+    background: var(--accent-soft); border-radius: 6px; padding: 2px 8px; margin-bottom: 6px;
+  }
+
+  .med-cat { border: 1px solid var(--line); border-radius: 12px; margin-bottom: 8px; overflow: hidden; background: #fff; }
+  .med-cat.has-sel { border-color: var(--accent); }
+  .med-cat-head { width: 100%; text-align: left; background: transparent; border: 0; padding: 13px 15px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; font-weight: 700; font-size: 0.98rem; color: var(--text); font-family: inherit; }
+  .med-cat-head:hover { background: var(--accent-soft); }
+  .cat-right { display: flex; align-items: center; gap: 8px; }
+  .cat-count { color: var(--accent-dark); font-weight: 700; font-size: 0.82rem; }
+  .cat-arrow { color: var(--muted); transition: transform .18s; }
+  .med-cat.open .cat-arrow { transform: rotate(180deg); }
+  .med-cat-body { display: none; padding: 0 12px 12px; }
+  .med-cat.open .med-cat-body { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 8px; }
+
+  .food-group { margin-bottom: 16px; }
+  .food-group h3 { font-size: 0.85rem; color: var(--muted); margin: 0 0 8px; font-weight: 600; }
+  .food-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); gap: 8px; }
+  .food {
+    border: 1.5px solid var(--line); border-radius: 12px; background: #fff;
+    padding: 10px 4px 8px; text-align: center; cursor: pointer; user-select: none;
+    transition: all .12s ease;
+  }
+  .food:hover { border-color: #d8c9ba; transform: translateY(-1px); }
+  .food .emoji { font-size: 1.7rem; display: block; line-height: 1.2; }
+  .food .name { font-size: 0.78rem; margin-top: 2px; }
+  .food.selected { border-color: var(--accent); background: var(--accent-soft); box-shadow: 0 0 0 1px var(--accent) inset; }
+  .food.custom { position: relative; }
+  .food .remove {
+    position: absolute; top: -7px; right: -7px; width: 18px; height: 18px;
+    background: #e53935; color: #fff; border-radius: 50%; font-size: 0.7rem;
+    display: grid; place-items: center; line-height: 1; border: 2px solid #fff;
+  }
+
+  .custom-add {
+    margin-top: 20px; padding: 14px 16px;
+    background: var(--accent-soft); border: 1px solid #d8ccef; border-radius: 12px;
+  }
+  .custom-title { font-size: 0.92rem; color: var(--accent-dark); margin: 0 0 4px; font-weight: 700; }
+  .custom-desc { font-size: 0.8rem; color: var(--muted); margin: 0 0 10px; }
+  .custom-row { display: flex; gap: 8px; }
+  .custom-row input {
+    flex: 1; padding: 11px 13px; font-size: 0.95rem;
+    border: 1px solid #d8c9ba; border-radius: 10px; background: #fff;
+  }
+  .custom-row input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 2px #e0d6f3; }
+  .custom-row button.add {
+    white-space: nowrap; background: var(--accent); color: #fff; border: 0;
+    padding: 11px 18px; border-radius: 10px; font-weight: 600; cursor: pointer; font-size: 0.95rem;
+  }
+  .custom-row button.add:hover { background: var(--accent-dark); }
+
+  .actions { display: flex; gap: 10px; align-items: center; margin-top: 4px; }
+  button.primary {
+    background: var(--accent); color: #fff; border: 0; padding: 12px 22px;
+    border-radius: 10px; font-size: 1rem; font-weight: 600; cursor: pointer;
+  }
+  button.primary:disabled { background: #d8c9ba; cursor: not-allowed; }
+  button.ghost {
+    background: transparent; border: 1px solid var(--line); color: var(--muted);
+    padding: 12px 16px; border-radius: 10px; cursor: pointer; font-size: 0.9rem;
+  }
+  .count { color: var(--muted); font-size: 0.88rem; margin-left: auto; }
+
+  /* results */
+  #results:empty { display: none; }
+  .result-card {
+    border-left: 5px solid; border-radius: 10px; padding: 14px 16px;
+    margin-bottom: 12px; background: #fff; border: 1px solid var(--line);
+  }
+  .result-card.high { border-left-color: var(--high); }
+  .result-card.medium { border-left-color: var(--medium); }
+  .result-card.low { border-left-color: var(--low); }
+  .badge {
+    display: inline-block; font-size: 0.72rem; font-weight: 700; color: #fff;
+    padding: 2px 9px; border-radius: 999px; margin-bottom: 6px;
+  }
+  .badge.high { background: var(--high); }
+  .badge.medium { background: var(--medium); }
+  .badge.low { background: var(--low); }
+  .result-card .title { font-weight: 700; font-size: 1rem; }
+  .result-card .effect { margin: 6px 0 4px; font-size: 0.92rem; }
+  .result-card .advice { font-size: 0.9rem; color: #334155; background: #f6f8fb; border-radius: 8px; padding: 8px 10px; }
+  .chips { margin-top: 8px; }
+  .chip { display: inline-block; background: #eef2f7; border-radius: 999px; padding: 2px 10px; font-size: 0.78rem; margin: 2px 4px 2px 0; }
+
+  .timing-box { background: #eef5fb; border: 1px solid #cfe1f1; border-radius: 10px; padding: 12px 14px; margin-top: 12px; }
+  .timing-title { font-weight: 700; margin-bottom: 6px; color: #2f5d86; font-size: 0.95rem; }
+  .timing-item { font-size: 0.9rem; margin: 4px 0; color: #355; }
+  .timing-item b { color: #2f5d86; }
+  .safe-box { background: #f0f9f1; border: 1px solid #cdebd2; border-radius: 10px; padding: 12px 14px; margin-top: 12px; font-size: 0.9rem; }
+  .safe-box .chip { background: #e0f2e3; }
+  .empty-hint { color: var(--muted); text-align: center; padding: 24px; }
+  .summary { font-weight: 700; margin: 4px 0 14px; font-size: 1.1rem; }
+
+  .links { margin-top: 28px; padding: 16px 18px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: 0 4px 14px rgba(140,110,80,.07); }
+  .links-title { font-weight: 700; margin: 0 0 10px; }
+  .links ul { margin: 0; padding-left: 18px; }
+  .links li { font-size: 0.9rem; margin: 7px 0; color: var(--muted); }
+  .links a { color: var(--accent-dark); font-weight: 700; text-decoration: none; }
+  .links a:hover { text-decoration: underline; }
+  .links-note { font-size: 0.8rem; color: var(--muted); margin: 12px 0 0; }
+</style>
+</head>
+<body>
+<div class="fridge-doors" id="fridgeIntro" aria-hidden="true">
+  <div class="fridge-light"></div>
+  <div class="door left">
+    <div class="door-handle"></div>
+    <div class="deco mags" style="top:9%; right:12px;">
+      <span class="mag red">W</span><span class="mag blue">E</span><span class="mag green">L</span>
+    </div>
+    <div class="deco mags" style="top:24%; right:12px;">
+      <span class="mag yellow">H</span><span class="mag pink">O</span>
+    </div>
+    <div class="deco memo memo-y" style="bottom:15%; left:12%;">오늘<br>약 드셨나요?</div>
+  </div>
+  <div class="door right">
+    <div class="door-handle"></div>
+    <div class="deco mags" style="top:9%; left:12px;">
+      <span class="mag yellow">C</span><span class="mag pink">O</span><span class="mag teal">M</span><span class="mag red">E</span>
+    </div>
+    <div class="deco mags" style="top:24%; left:12px;">
+      <span class="mag green">M</span><span class="mag blue">E</span>
+    </div>
+    <div class="deco memo memo-p" style="top:40%; right:9%;">checklist<br>□ 우유<br>□ 채소<br>□ 과일</div>
+    <div class="deco polaroid" style="bottom:12%; left:15%;">
+      <div class="pola-cal"><span class="cal-top">7월</span><span class="cal-day">1</span><span class="cal-chk">✓</span></div>
+      <div class="pola-cap">약 먹기</div>
+    </div>
+  </div>
+</div>
+<div class="wrap">
+  <header class="hero">
+    <div class="hero-inner">
+      <h1>🧊 우리집 냉장고 주치의</h1>
+      <p>복용 중인 약을 고르고, 가지고 있는 음식을 선택하면 주의해야 할 식재료를 알려드려요.</p>
+    </div>
+  </header>
+
+  <div class="disclaimer" id="disclaimer">불러오는 중…</div>
+
+  <div class="legend" id="legend"></div>
+
+  <!-- STEP 1 -->
+  <section class="panel">
+    <div class="step-head">
+      <p class="step-label"><span class="step-num">1</span> 복용 중인 약 선택 <span class="hint-inline">(여러 개 선택 가능)</span></p>
+      <button class="lang-toggle" id="langBtn" type="button">🔤 영어로 보기</button>
+    </div>
+    <div id="medList" class="med-cats"></div>
+    <div class="med-meta" id="medMeta"></div>
+    <div class="age-row">
+      <label for="ageInput">나이 <span class="hint-inline">(선택 입력)</span></label>
+      <input type="number" id="ageInput" min="0" max="120" inputmode="numeric" placeholder="예: 68" />
+    </div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel">
+    <p class="step-label"><span class="step-num">2</span> 가지고 있는 음식 선택</p>
+    <div class="fridge">
+      <img class="fridge-magnet" src="fridge-inside.jpeg" alt="냉장고 속 음식 일러스트" />
+      <p class="fridge-cap">🧊 냉장고를 열어 칸마다 가진 음식을 골라보세요</p>
+      <div id="foodCatalog"></div>
+    </div>
+
+    <div class="custom-add">
+      <p class="custom-title">✏️ 찾는 음식이 없나요? 직접 입력해서 추가하세요</p>
+      <p class="custom-desc">위 아이콘 목록에 없는 식재료·음식 이름을 적고 추가하면, 선택한 약과의 상호작용을 함께 확인해 드려요.</p>
+      <div class="custom-row">
+        <input type="text" id="customInput" placeholder="예: 김치, 자몽주스, 방울토마토, 멸치볶음…" maxlength="20" />
+        <button class="add" id="addBtn" type="button">추가하기</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ACTIONS -->
+  <div class="actions">
+    <button class="primary" id="checkBtn" disabled>결과 확인하기</button>
+    <button class="ghost" id="resetBtn">초기화</button>
+    <button class="ghost" id="copyBtn" disabled>📋 결과 복사</button>
+    <span class="count" id="selCount">선택된 음식 0개</span>
+  </div>
+
+  <!-- RESULTS -->
+  <section id="results" style="margin-top:24px;"></section>
+
+  <!-- 더 알아보기 -->
+  <footer class="links">
+    <p class="links-title">📚 더 자세히 알아보기 (공식 정보)</p>
+    <ul>
+      <li><a href="https://nedrug.mfds.go.kr" target="_blank" rel="noopener">의약품안전나라</a> — 식약처 공식 의약품 정보(효능·용법·주의사항) 검색</li>
+      <li><a href="https://www.health.kr" target="_blank" rel="noopener">약학정보원</a> — 의약품·상호작용 정보 표준 DB</li>
+      <li><a href="https://health.kdca.go.kr" target="_blank" rel="noopener">국가건강정보포털</a> — 질병관리청, 전문가가 검증한 질환·약품·식품 정보</li>
+    </ul>
+    <p class="links-note">※ 위 사이트는 참고용 공식 자료입니다. 개인별 복약 상담은 담당 의사·약사에게 받으세요.</p>
+  </footer>
+</div>
+
+<script>
+/* ===== 데이터 (drug-food-interactions.json 내장본) ===== */
+const DATA = {
+  disclaimer: "본 정보는 일반적으로 알려진 약물-음식 상호작용을 참고용으로 정리한 것입니다. 의학적 진단·처방을 대체하지 않으며, 실제 복약과 식단은 반드시 담당 의사 또는 약사와 상담하세요.",
+  severity_levels: {
+    high: "위험 — 드시기 전에 의사나 약사와 상담하세요",
+    medium: "주의 — 드시는 양과 시간을 조절하세요",
+    low: "참고 — 평소 드시는 양이라면 괜찮아요"
+  },
+  medications: [
+    { id:"warfarin", name_ko:"와파린", category:"항응고제(혈액응고 억제)", brand_examples:["쿠마딘"],
+      interactions:[
+        { ingredient_label:"비타민K가 풍부한 녹색 채소", match_keywords:["시금치","케일","브로콜리","양배추","상추","낫토","청경채","파슬리","아스파라거스","방울양배추","무청","콜라드","녹차","녹색채소"], severity:"high",
+          effect:"비타민K는 와파린의 항응고 효과를 약화시켜 혈전 위험을 높일 수 있습니다.",
+          advice:"완전히 끊기보다 '일정한 양'을 꾸준히 드세요. 평소 섭취량을 급격히 늘리거나 줄이지 마세요." },
+        { ingredient_label:"마늘·생강·인삼 등 (다량·보충제)", match_keywords:["마늘","생강","인삼","홍삼","은행","당귀"], severity:"medium",
+          effect:"마늘·생강·인삼·은행 등을 다량(특히 건강기능식품)으로 섭취하면 항응고 작용이 강해져 출혈 위험이 커질 수 있습니다.",
+          advice:"보충제 형태의 다량 섭취를 피하고, 병용 전 의사·약사와 상담하세요." },
+        { ingredient_label:"자몽 · 자몽주스", match_keywords:["자몽","자몽주스"], severity:"medium",
+          effect:"자몽이 약물 대사를 방해해 와파린 혈중 농도를 높여 출혈 위험을 키울 수 있습니다.",
+          advice:"자몽 및 자몽 함유 음료는 피하는 것이 안전합니다." },
+        { ingredient_label:"크랜베리 · 알코올", match_keywords:["크랜베리","크랜베리주스","술","맥주","와인","소주"], severity:"medium",
+          effect:"크랜베리와 알코올은 와파린의 항응고 작용을 강화해 출혈 위험을 높일 수 있습니다.",
+          advice:"다량 섭취를 피하고 음주는 자제하세요." }
+      ] },
+    { id:"levothyroxine", name_ko:"레보티록신(갑상선호르몬제)", category:"갑상선호르몬 보충제", brand_examples:["씬지로이드"],
+      interactions:[
+        { ingredient_label:"칼슘·철분이 많은 식품(유제품 등)", match_keywords:["우유","치즈","요거트","멸치","두유","칼슘","철분","달걀노른자"], severity:"high",
+          effect:"칼슘과 철분은 레보티록신의 흡수를 크게 떨어뜨려 약효를 약화시킵니다.",
+          advice:"약 복용 후 최소 4시간 간격을 두고 드세요. 보통 공복에 약을 먹는 것이 좋습니다." },
+        { ingredient_label:"대두(콩)·호두 등", match_keywords:["콩","두부","두유","된장","콩나물","대두","호두","목화씨"], severity:"medium",
+          effect:"대두 단백질과 호두·목화씨 등은 갑상선호르몬제의 흡수를 방해할 수 있습니다.",
+          advice:"약 복용과 시간 간격을 두고 드세요." },
+        { ingredient_label:"요오드 과다 식품(해조류)", match_keywords:["다시마","미역","김","톳","해조류","요오드"], severity:"medium",
+          effect:"과도한 요오드는 갑상선 기능에 영향을 주어 호르몬 조절을 어렵게 할 수 있습니다.",
+          advice:"해조류를 과다하게 섭취하지 않도록 주의하세요." },
+        { ingredient_label:"커피·자몽", match_keywords:["커피","원두","에스프레소","자몽","자몽주스"], severity:"low",
+          effect:"커피와 자몽주스는 레보티록신 흡수를 지연시켜 약효를 떨어뜨릴 수 있습니다.",
+          advice:"약 복용 후 30분~1시간 뒤에 드세요." }
+      ] },
+    { id:"simvastatin", name_ko:"심바스타틴(고지혈증약)", category:"스타틴 계열 콜레스테롤 저하제", brand_examples:["조코"],
+      interactions:[
+        { ingredient_label:"자몽 · 자몽주스", match_keywords:["자몽","자몽주스"], severity:"high",
+          effect:"자몽은 스타틴 대사를 억제해 혈중 농도를 크게 높이고 근육통·횡문근융해증 위험을 키웁니다.",
+          advice:"자몽 및 자몽 함유 음료는 피하세요. (특히 심바스타틴은 영향이 큼)" }
+      ] },
+    { id:"atorvastatin", name_ko:"아토르바스타틴(고지혈증약)", category:"스타틴 계열 콜레스테롤 저하제", brand_examples:["리피토"],
+      interactions:[
+        { ingredient_label:"자몽 · 자몽주스", match_keywords:["자몽","자몽주스"], severity:"medium",
+          effect:"다량의 자몽은 아토르바스타틴 혈중 농도를 높여 근육 관련 부작용 위험을 키울 수 있습니다.",
+          advice:"자몽 섭취를 가급적 피하거나 소량으로 제한하세요." }
+      ] },
+    { id:"amlodipine", name_ko:"암로디핀(혈압약)", category:"칼슘채널차단제(혈압 강하)", brand_examples:["노바스크"],
+      interactions:[
+        { ingredient_label:"자몽 · 자몽주스", match_keywords:["자몽","자몽주스"], severity:"low",
+          effect:"암로디핀은 같은 계열 중 자몽 영향이 작은 편이지만, 다량 섭취 시 혈압이 평소보다 더 떨어질 수 있습니다.",
+          advice:"적당량은 대체로 괜찮지만, 자몽을 많이 드시는 경우에는 주의하세요." }
+      ] },
+    { id:"enalapril", name_ko:"에날라프릴(혈압약, ACE억제제)", category:"ACE 억제제(혈압 강하)", brand_examples:["레니프릴"],
+      interactions:[
+        { ingredient_label:"칼륨이 풍부한 식품 · 저염소금", match_keywords:["바나나","토마토","감자","고구마","아보카도","오렌지","시금치","저염소금","소금대체제","칼륨","매실"], severity:"high",
+          effect:"ACE 억제제는 체내 칼륨을 높이는데, 칼륨 식품을 과다 섭취하면 고칼륨혈증(부정맥 위험)이 생길 수 있습니다.",
+          advice:"칼륨이 많은 식품과 '저염(칼륨) 소금'의 과다 섭취를 피하세요." }
+      ] },
+    { id:"losartan", name_ko:"로사르탄(혈압약, ARB)", category:"안지오텐신수용체차단제(혈압 강하)", brand_examples:["코자"],
+      interactions:[
+        { ingredient_label:"칼륨이 풍부한 식품 · 저염소금", match_keywords:["바나나","토마토","감자","고구마","아보카도","오렌지","시금치","저염소금","소금대체제","칼륨","매실"], severity:"medium",
+          effect:"로사르탄도 칼륨 수치를 높일 수 있어, 칼륨 식품 과다 섭취 시 고칼륨혈증 위험이 있습니다.",
+          advice:"칼륨 식품과 칼륨 함유 소금 대체제의 과다 섭취에 주의하세요." }
+      ] },
+    { id:"tetracycline", name_ko:"테트라사이클린계 항생제", category:"항생제", brand_examples:["독시사이클린","미노사이클린"],
+      interactions:[
+        { ingredient_label:"칼슘·철분이 많은 식품(유제품 등)", match_keywords:["우유","치즈","요거트","멸치","두유","칼슘","철분"], severity:"high",
+          effect:"칼슘·철분·마그네슘이 항생제와 결합(킬레이트)해 흡수를 크게 떨어뜨려 약효가 약해질 수 있습니다.",
+          advice:"유제품·철분이 많은 식품은 약 복용 2시간 전후로는 피하세요." }
+      ] },
+    { id:"bisphosphonate", name_ko:"비스포스포네이트(골다공증약)", category:"골흡수 억제제", brand_examples:["알렌드로네이트","리세드로네이트"],
+      interactions:[
+        { ingredient_label:"모든 음식·음료(특히 칼슘·카페인·탄산·고지방)", match_keywords:["우유","치즈","요거트","멸치","두유","칼슘","커피","콜라","홍차","탄산음료","탄산","오렌지","오렌지주스","주스","고지방"], severity:"high",
+          effect:"음식·음료, 특히 칼슘이나 미네랄이 든 것은 비스포스포네이트의 흡수를 거의 막아 약효를 없앨 수 있습니다. 커피·콜라·홍차 등 카페인 음료, 탄산음료, 고지방 식사도 흡수를 크게 떨어뜨립니다.",
+          advice:"아침 공복에 '물'로만 복용하고, 이후 30분~1시간은 음식·음료(카페인·탄산·우유·주스 포함)를 피하세요." }
+      ] },
+    { id:"maoi", name_ko:"MAO 억제제", category:"항우울제·파킨슨병 치료제", brand_examples:["셀레길린","모클로베미드"],
+      interactions:[
+        { ingredient_label:"티라민이 풍부한 숙성·발효 식품", match_keywords:["숙성치즈","치즈","된장","청국장","간장","살라미","소시지","가공육","절임","발효식품","김치","청어","누에콩","파바"], severity:"high",
+          effect:"티라민이 많은 식품은 MAO 억제제와 만나면 혈압이 갑자기 치솟는 위험한 반응(고혈압 위기)을 일으킬 수 있습니다.",
+          advice:"숙성치즈·발효식품·가공육·김치 등 티라민이 많은 음식은 피하세요." },
+        { ingredient_label:"맥주·와인 등 주류", match_keywords:["맥주","와인","술","소주"], severity:"high",
+          effect:"특히 생맥주·레드와인 등은 티라민이 많아 위험한 혈압 상승을 일으킬 수 있습니다.",
+          advice:"음주를 피하세요." },
+        { ingredient_label:"과숙 과일·초콜릿·건과일 등", match_keywords:["바나나","아보카도","초콜릿","건과일","라즈베리"], severity:"medium",
+          effect:"많이 익은 바나나·아보카도, 초콜릿·건과일에는 티라민이 늘어 혈압에 영향을 줄 수 있습니다.",
+          advice:"과도하게 익은 과일과 초콜릿·건과일의 과량 섭취를 피하세요." }
+      ] },
+    { id:"metronidazole", name_ko:"메트로니다졸(항생제)", category:"항생제·항원충제", brand_examples:["후라시닐"],
+      interactions:[
+        { ingredient_label:"알코올(술 전반)", match_keywords:["술","맥주","와인","소주","알코올"], severity:"high",
+          effect:"메트로니다졸과 알코올을 함께 섭취하면 구역·구토·홍조·심장 두근거림 등 디설피람 유사 반응이 나타날 수 있습니다.",
+          advice:"복용 중은 물론 복용을 마친 뒤에도 최소 3일간 금주하세요." }
+      ] },
+    { id:"digoxin", name_ko:"디곡신(강심제)", category:"강심배당체(심부전·부정맥)", brand_examples:["디고신"],
+      interactions:[
+        { ingredient_label:"감초·감초차", match_keywords:["감초","감초차"], severity:"high",
+          effect:"감초는 체내 칼륨을 떨어뜨려 디곡신 독성(부정맥 등) 위험을 높일 수 있습니다.",
+          advice:"감초가 든 차·한약·과자 등을 피하세요." },
+        { ingredient_label:"고섬유질 식품(통곡물 등)", match_keywords:["통곡물","시리얼","밀기울","식이섬유","고섬유질"], severity:"medium",
+          effect:"식이섬유가 매우 많은 식품은 디곡신 흡수를 일부 줄일 수 있습니다.",
+          advice:"고섬유질 식품과 약 복용 시간을 1~2시간 정도 띄우세요." },
+        { ingredient_label:"센나(차풀잎)·세인트존스워트", match_keywords:["센나","차풀잎","세인트존스워트"], severity:"medium",
+          effect:"센나(변비약 성분)와 세인트존스워트는 디곡신의 흡수·효능을 떨어뜨릴 수 있습니다.",
+          advice:"해당 성분이 든 하제·건강기능식품 섭취 시 주의하고 상담하세요." }
+      ] },
+    { id:"betablocker", name_ko:"베타차단제(혈압약)", category:"교감신경 차단제(혈압·협심증)", brand_examples:["메토프롤롤","카르베딜롤","아테놀롤"],
+      interactions:[
+        { ingredient_label:"고기 등 고단백 식사", match_keywords:["고기","육류","소고기","닭고기","돼지고기"], severity:"medium",
+          effect:"메토프롤롤·카르베딜롤은 고기와 함께 복용하면 약효가 증가해 어지럼·저혈압이 생길 수 있습니다.",
+          advice:"카르베딜롤·메토프롤롤은 식사와 함께 일정하게 복용하고, 임의로 중단하지 마세요." },
+        { ingredient_label:"알코올(술)", match_keywords:["술","맥주","와인","소주","알코올"], severity:"medium",
+          effect:"알코올은 혈압 강하 효과를 증강시켜 이상반응을 일으킬 수 있습니다.",
+          advice:"음주를 피하세요." }
+      ] },
+    { id:"diuretic", name_ko:"이뇨제(치아지드·루프계)", category:"이뇨제(혈압·부종)", brand_examples:["히드로클로로티아지드","푸로세미드"],
+      interactions:[
+        { ingredient_label:"알로에(다량)", match_keywords:["알로에"], severity:"medium",
+          effect:"치아지드·루프 이뇨제는 칼륨을 배출시키는데, 알로에를 함께 다량 섭취하면 칼륨이 지나치게 감소할 수 있습니다.",
+          advice:"알로에 등 완하 작용이 있는 식품의 과량 섭취를 피하세요." },
+        { ingredient_label:"화학조미료(MSG)", match_keywords:["MSG","화학조미료","msg"], severity:"low",
+          effect:"치아지드계 이뇨제는 MSG 작용을 증가시켜 두통·어지럼·가슴통증을 일으킬 수 있습니다.",
+          advice:"MSG가 많은 음식의 과량 섭취에 주의하세요." },
+        { ingredient_label:"알코올(술)", match_keywords:["술","맥주","와인","소주","알코올"], severity:"medium",
+          effect:"알코올은 혈압 강하 효과를 증강시켜 기립성 저혈압을 초래할 수 있습니다.",
+          advice:"음주를 피하세요." }
+      ] },
+    { id:"diuretic_ksparing", name_ko:"칼륨보존성 이뇨제", category:"이뇨제(혈압·부종)", brand_examples:["스피로노락톤","트리암테렌"],
+      interactions:[
+        { ingredient_label:"칼륨이 풍부한 식품 · 저염소금", match_keywords:["바나나","토마토","감자","고구마","아보카도","오렌지","시금치","저염소금","소금대체제","칼륨","매실"], severity:"high",
+          effect:"칼륨보존성 이뇨제는 칼륨을 몸에 남기므로, 칼륨 식품을 과다 섭취하면 고칼륨혈증(부정맥 위험)이 생길 수 있습니다.",
+          advice:"칼륨이 많은 식품과 '저염(칼륨) 소금'의 과다 섭취를 피하세요." }
+      ] },
+    { id:"fluoroquinolone", name_ko:"퀴놀론계 항생제", category:"항생제", brand_examples:["시프로플록사신","레보플록사신"],
+      interactions:[
+        { ingredient_label:"유제품·칼슘·철분", match_keywords:["우유","치즈","요거트","멸치","두유","칼슘","철분"], severity:"high",
+          effect:"우유 등 유제품과 칼슘·철분은 퀴놀론과 결합(킬레이트)해 흡수를 크게 떨어뜨립니다.",
+          advice:"약 복용 전후 2시간 이내에는 유제품·칼슘·철분 식품을 피하세요." },
+        { ingredient_label:"카페인(커피 등)", match_keywords:["커피","원두","에스프레소","카페인","콜라","홍차","에너지음료"], severity:"medium",
+          effect:"시프로플록사신은 카페인 배설을 억제해 심장 두근거림·불면·신경과민을 일으킬 수 있습니다.",
+          advice:"복용 중 카페인 섭취를 줄이세요." }
+      ] },
+    { id:"nitrate", name_ko:"질산염 혈관확장제(협심증약)", category:"심장약(협심증·부정맥)", brand_examples:["이소소르비드","니트로글리세린"],
+      interactions:[
+        { ingredient_label:"알코올(술)", match_keywords:["술","맥주","와인","소주","알코올"], severity:"medium",
+          effect:"알코올은 혈관확장제의 혈압강하 작용을 증강시켜 위험한 저혈압을 일으킬 수 있습니다.",
+          advice:"음주를 피하세요." }
+      ] }
+  ]
+};
+
+/* ===== 약별 복용 타이밍 가이드 ===== */
+const MED_TIMING = {
+  warfarin: "매일 같은 시간에 복용하고, 비타민K 섭취량을 일정하게 유지하세요.",
+  levothyroxine: "아침 공복에 물과 함께 복용하고, 30분~1시간 뒤에 식사·커피를 드세요. 칼슘·철분제와는 4시간 간격.",
+  simvastatin: "콜레스테롤은 밤에 더 만들어지므로 저녁(취침 전) 복용이 효과적입니다.",
+  atorvastatin: "작용 시간이 길어 하루 중 일정한 시간이면 언제 드셔도 괜찮습니다.",
+  amlodipine: "하루 한 번 매일 같은 시간에 복용하세요. 식사와는 무관합니다.",
+  enalapril: "매일 같은 시간에 복용하세요. 식사와는 무관합니다.",
+  losartan: "매일 같은 시간에 복용하세요. 식사와는 무관합니다.",
+  tetracycline: "유제품·제산제와 2시간 간격을 두고, 물을 충분히 마시며 복용 직후 바로 눕지 마세요.",
+  bisphosphonate: "기상 직후 공복에 물 한 컵으로만 복용하고, 이후 30~60분간 눕지 말고 음식·음료를 피하세요.",
+  maoi: "식사와는 무관하지만, 티라민이 많은 음식(위 주의)을 반드시 피하세요.",
+  metronidazole: "위장장애가 있으면 음식과 함께 드시고, 복용 중과 복용 후 3일간 금주하세요.",
+  digoxin: "매일 같은 시간에 복용하고, 고섬유질 식품과는 1~2시간 간격을 두세요.",
+  betablocker: "매일 같은 시간에 식사와 함께 복용하고, 임의로 중단하지 마세요.",
+  diuretic: "아침에 복용하면 밤에 화장실 가는 횟수를 줄일 수 있습니다. 칼륨·마그네슘이 빠지므로 과일·채소를 충분히 드세요.",
+  diuretic_ksparing: "매일 같은 시간에 복용하고, 칼륨 식품 과다 섭취에 주의하세요.",
+  fluoroquinolone: "유제품·칼슘·철분과는 2시간 간격을 두고 복용하세요.",
+  nitrate: "식사와 무관하게 복용할 수 있으나, 음주는 피하세요."
+};
+
+/* ===== 약 영어명 (괄호 병기용) ===== */
+const MED_EN = {
+  warfarin: "Warfarin", levothyroxine: "Levothyroxine", simvastatin: "Simvastatin",
+  atorvastatin: "Atorvastatin", amlodipine: "Amlodipine", enalapril: "Enalapril",
+  losartan: "Losartan", tetracycline: "Tetracyclines", bisphosphonate: "Bisphosphonates",
+  maoi: "MAOI", metronidazole: "Metronidazole", digoxin: "Digoxin",
+  betablocker: "Beta blockers", diuretic: "Diuretics", diuretic_ksparing: "K-sparing diuretics",
+  fluoroquinolone: "Fluoroquinolones", nitrate: "Nitrates"
+};
+/* 약 분류(카테고리) */
+const MED_CAT = {
+  amlodipine: "혈압약", enalapril: "혈압약", losartan: "혈압약",
+  betablocker: "혈압약", diuretic: "혈압약", diuretic_ksparing: "혈압약",
+  digoxin: "심장약", nitrate: "심장약",
+  simvastatin: "고지혈증약", atorvastatin: "고지혈증약",
+  warfarin: "항응고제", levothyroxine: "갑상선약",
+  tetracycline: "항생제", metronidazole: "항생제", fluoroquinolone: "항생제",
+  bisphosphonate: "골다공증약", maoi: "정신과약"
+};
+const MED_CAT_ORDER = ["혈압약", "심장약", "고지혈증약", "항응고제", "갑상선약", "항생제", "골다공증약", "정신과약"];
+let showEn = false;
+function medLabel(m) { return showEn && MED_EN[m.id] ? MED_EN[m.id] : m.name_ko; }
+
+/* ===== 선택 가능한 음식 카탈로그 (이모지 아이콘) ===== */
+const FOOD_GROUPS = [
+  { group:"채소", items:[
+    { id:"spinach", name:"시금치", emoji:"🥬", keywords:["시금치","녹색채소","칼륨"] },
+    { id:"kale", name:"케일", emoji:"🥬", keywords:["케일","녹색채소"] },
+    { id:"broccoli", name:"브로콜리", emoji:"🥦", keywords:["브로콜리","녹색채소"] },
+    { id:"cabbage", name:"양배추", emoji:"🥬", keywords:["양배추","녹색채소"] },
+    { id:"lettuce", name:"상추", emoji:"🥗", keywords:["상추","녹색채소"] },
+    { id:"tomato", name:"토마토", emoji:"🍅", keywords:["토마토","칼륨"] },
+    { id:"potato", name:"감자", emoji:"🥔", keywords:["감자","칼륨"] },
+    { id:"sweetpotato", name:"고구마", emoji:"🍠", keywords:["고구마","칼륨"] },
+    { id:"avocado", name:"아보카도", emoji:"🥑", keywords:["아보카도","칼륨"] },
+    { id:"carrot", name:"당근", emoji:"🥕", keywords:[] },
+    { id:"cucumber", name:"오이", emoji:"🥒", keywords:[] }
+  ]},
+  { group:"콩 · 발효", items:[
+    { id:"natto", name:"낫토", emoji:"🫘", keywords:["낫토","콩","대두"] },
+    { id:"tofu", name:"두부", emoji:"🍲", keywords:["두부","콩","대두"] },
+    { id:"soymilk", name:"두유", emoji:"🥛", keywords:["두유","콩","대두","칼슘"] },
+    { id:"doenjang", name:"된장", emoji:"🥣", keywords:["된장","콩","대두"] },
+    { id:"beansprout", name:"콩나물", emoji:"🌱", keywords:["콩나물","콩"] },
+    { id:"soysauce", name:"간장", emoji:"🫙", keywords:["간장","발효식품"] }
+  ]},
+  { group:"과일", items:[
+    { id:"grapefruit", name:"자몽", emoji:"🍊", keywords:["자몽","자몽주스"] },
+    { id:"cranberry", name:"크랜베리", emoji:"🫐", keywords:["크랜베리"] },
+    { id:"banana", name:"바나나", emoji:"🍌", keywords:["바나나","칼륨"] },
+    { id:"orange", name:"오렌지", emoji:"🍊", keywords:["오렌지","칼륨"] },
+    { id:"apple", name:"사과", emoji:"🍎", keywords:[] }
+  ]},
+  { group:"유제품 · 단백질", items:[
+    { id:"milk", name:"우유", emoji:"🥛", keywords:["우유","칼슘"] },
+    { id:"cheese", name:"치즈", emoji:"🧀", keywords:["치즈","칼슘"] },
+    { id:"yogurt", name:"요거트", emoji:"🍶", keywords:["요거트","칼슘"] },
+    { id:"anchovy", name:"멸치", emoji:"🐟", keywords:["멸치","칼슘"] },
+    { id:"egg", name:"달걀", emoji:"🥚", keywords:["달걀노른자"] },
+    { id:"chicken", name:"닭고기", emoji:"🍗", keywords:["닭고기","고기","육류"] },
+    { id:"beef", name:"소고기", emoji:"🥩", keywords:["소고기","고기","육류"] },
+    { id:"sausage", name:"햄·소시지", emoji:"🌭", keywords:["소시지","햄","살라미","가공육"] }
+  ]},
+  { group:"해조류", items:[
+    { id:"kelp", name:"다시마", emoji:"🌿", keywords:["다시마","해조류","요오드"] },
+    { id:"seaweed", name:"미역", emoji:"🌿", keywords:["미역","해조류","요오드"] },
+    { id:"gim", name:"김", emoji:"🍙", keywords:["김","해조류","요오드"] }
+  ]},
+  { group:"음료", items:[
+    { id:"coffee", name:"커피", emoji:"☕", keywords:["커피","원두","에스프레소"] },
+    { id:"wine", name:"와인", emoji:"🍷", keywords:["와인","술"] },
+    { id:"beer", name:"맥주", emoji:"🍺", keywords:["맥주","술"] },
+    { id:"soju", name:"소주", emoji:"🍾", keywords:["소주","술"] },
+    { id:"licorice", name:"감초차", emoji:"🍵", keywords:["감초","감초차"] }
+  ]},
+  { group:"곡물 · 기타", items:[
+    { id:"rice", name:"쌀밥", emoji:"🍚", keywords:[] },
+    { id:"wholegrain", name:"통곡물·시리얼", emoji:"🌾", keywords:["통곡물","시리얼","밀기울","식이섬유","고섬유질"] },
+    { id:"saltsub", name:"저염소금", emoji:"🧂", keywords:["저염소금","소금대체제","칼륨"] }
+  ]}
+];
+
+/* ===== 상태 ===== */
+const FOOD_BY_ID = {};
+FOOD_GROUPS.forEach(g => g.items.forEach(f => FOOD_BY_ID[f.id] = f));
+const selected = new Set();
+
+/* ===== 초기 렌더 ===== */
+document.getElementById("disclaimer").textContent = "⚠️ " + DATA.disclaimer;
+
+/* 위험 등급(색상) 범례 — DATA.severity_levels 설명을 그대로 사용 */
+const LEGEND_LABEL = { high: "위험", medium: "주의", low: "참고" };
+document.getElementById("legend").innerHTML = ["high", "medium", "low"].map(lv => {
+  const desc = DATA.severity_levels[lv].split("—")[1]?.trim() || DATA.severity_levels[lv];
+  return `<span class="legend-item"><span class="legend-dot ${lv}"></span><b>${LEGEND_LABEL[lv]}</b> · ${desc}</span>`;
+}).join("");
+
+const selectedMeds = new Set();
+const medList = document.getElementById("medList");
+MED_CAT_ORDER.forEach(cat => {
+  const meds = DATA.medications.filter(m => MED_CAT[m.id] === cat);
+  if (!meds.length) return;
+  const wrap = document.createElement("div");
+  wrap.className = "med-cat";
+  wrap.dataset.cat = cat;
+  const head = document.createElement("button");
+  head.type = "button";
+  head.className = "med-cat-head";
+  head.setAttribute("aria-expanded", "false");
+  head.innerHTML = `<span class="cat-name">${cat}</span><span class="cat-right"><span class="cat-count" data-cat="${cat}"></span><span class="cat-arrow">▾</span></span>`;
+  const body = document.createElement("div");
+  body.className = "med-cat-body";
+  meds.forEach(m => {
+    const el = document.createElement("div");
+    el.className = "med-chip";
+    el.dataset.id = m.id;
+    el.innerHTML = `<span class="check">✓</span><span class="mname">${medLabel(m)}</span>`;
+    el.setAttribute("aria-pressed", "false");
+    makeActivatable(el, () => toggleMed(m.id, el));
+    body.appendChild(el);
+  });
+  head.addEventListener("click", () => {
+    const open = wrap.classList.toggle("open");
+    head.setAttribute("aria-expanded", open ? "true" : "false");
+  });
+  wrap.appendChild(head);
+  wrap.appendChild(body);
+  medList.appendChild(wrap);
+});
+updateCatCounts();
+loadSettings();
+
+const catalog = document.getElementById("foodCatalog");
+FOOD_GROUPS.forEach(g => {
+  const wrap = document.createElement("div");
+  wrap.className = "food-group";
+  const h = document.createElement("h3");
+  h.textContent = g.group;
+  wrap.appendChild(h);
+  const grid = document.createElement("div");
+  grid.className = "food-grid";
+  g.items.forEach(f => {
+    const el = document.createElement("div");
+    el.className = "food";
+    el.dataset.id = f.id;
+    el.innerHTML = `<span class="emoji">${f.emoji}</span><span class="name">${f.name}</span>`;
+    el.setAttribute("aria-pressed", "false");
+    makeActivatable(el, () => toggleFood(f.id, el));
+    grid.appendChild(el);
+  });
+  wrap.appendChild(grid);
+  catalog.appendChild(wrap);
+});
+
+/* 직접 추가한 음식이 들어갈 그룹 (처음엔 숨김) */
+const customWrap = document.createElement("div");
+customWrap.className = "food-group";
+customWrap.style.display = "none";
+customWrap.innerHTML = `<h3>직접 추가한 음식</h3>`;
+const customGrid = document.createElement("div");
+customGrid.className = "food-grid";
+customWrap.appendChild(customGrid);
+catalog.appendChild(customWrap);
+
+let customSeq = 0;
+
+/* ===== 인터랙션 ===== */
+const checkBtn = document.getElementById("checkBtn");
+const copyBtn = document.getElementById("copyBtn");
+const selCount = document.getElementById("selCount");
+let resultsShown = false;
+let lastResultText = "";
+
+/* 내 설정(약·나이) 저장/복원 — 이 기기에만, 계정 없음 */
+const LS_KEY = "drugfood_settings_v1";
+function saveSettings() {
+  try {
+    localStorage.setItem(LS_KEY, JSON.stringify({
+      meds: [...selectedMeds],
+      age: document.getElementById("ageInput").value
+    }));
+  } catch (e) {}
+}
+function loadSettings() {
+  try {
+    const s = JSON.parse(localStorage.getItem(LS_KEY) || "null");
+    if (!s) return;
+    if (s.age) document.getElementById("ageInput").value = s.age;
+    if (Array.isArray(s.meds)) s.meds.forEach(id => {
+      const el = medList.querySelector('.med-chip[data-id="' + id + '"]');
+      if (el && !selectedMeds.has(id)) toggleMed(id, el);
+    });
+    // 선택된 약이 있는 카테고리는 펼쳐 보여주기
+    MED_CAT_ORDER.forEach(cat => {
+      if ([...selectedMeds].some(id => MED_CAT[id] === cat)) {
+        const wrap = medList.querySelector('.med-cat[data-cat="' + cat + '"]');
+        if (wrap) { wrap.classList.add("open"); const h = wrap.querySelector(".med-cat-head"); if (h) h.setAttribute("aria-expanded", "true"); }
+      }
+    });
+  } catch (e) {}
+}
+
+/* 사용자 입력을 화면에 표시할 때 HTML 삽입(XSS) 방지 */
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+/* div 카드를 키보드로도 누를 수 있게 (Enter/Space) — 접근성 */
+function makeActivatable(el, handler) {
+  el.setAttribute("role", "button");
+  el.tabIndex = 0;
+  el.addEventListener("click", handler);
+  el.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); handler(); }
+  });
+}
+
+/* 이미 결과가 떠 있으면 선택 변경에 맞춰 자동 갱신/정리 */
+function refreshResults() {
+  if (!resultsShown) return;
+  if (selectedMeds.size > 0 && selected.size > 0) showResults(false);
+  else { document.getElementById("results").innerHTML = ""; resultsShown = false; copyBtn.disabled = true; }
+}
+
+function toggleFood(id, el) {
+  if (selected.has(id)) { selected.delete(id); el.classList.remove("selected"); }
+  else { selected.add(id); el.classList.add("selected"); }
+  el.setAttribute("aria-pressed", selected.has(id) ? "true" : "false");
+  selCount.textContent = `선택된 음식 ${selected.size}개`;
+  updateBtn();
+  refreshResults();
+}
+
+function updateBtn() {
+  checkBtn.disabled = !(selectedMeds.size > 0 && selected.size > 0);
+}
+
+function updateCatCounts() {
+  MED_CAT_ORDER.forEach(cat => {
+    const n = [...selectedMeds].filter(id => MED_CAT[id] === cat).length;
+    const badge = medList.querySelector('.cat-count[data-cat="' + cat + '"]');
+    if (badge) badge.textContent = n ? `${n} 선택됨` : "";
+    const wrap = medList.querySelector('.med-cat[data-cat="' + cat + '"]');
+    if (wrap) wrap.classList.toggle("has-sel", n > 0);
+  });
+}
+
+function toggleMed(id, el) {
+  if (selectedMeds.has(id)) { selectedMeds.delete(id); el.classList.remove("selected"); }
+  else { selectedMeds.add(id); el.classList.add("selected"); }
+  el.setAttribute("aria-pressed", selectedMeds.has(id) ? "true" : "false");
+  const meds = [...selectedMeds].map(x => DATA.medications.find(m => m.id === x));
+  document.getElementById("medMeta").textContent =
+    meds.length ? `선택된 약 ${meds.length}개: ${meds.map(medLabel).join(", ")}` : "";
+  updateBtn();
+  refreshResults();
+  updateCatCounts();
+  saveSettings();
+}
+
+/* ===== 직접 식재료 추가 ===== */
+const customInput = document.getElementById("customInput");
+
+function addCustomFood() {
+  const name = customInput.value.trim();
+  if (!name) return;
+  // 중복(기존 카탈로그 또는 이미 추가한 항목) 방지
+  const dup = Object.values(FOOD_BY_ID).some(f => f.name === name);
+  if (dup) {
+    customInput.value = "";
+    alert(`'${name}' 은(는) 이미 목록에 있어요.`);
+    return;
+  }
+
+  const id = "custom-" + (++customSeq);
+  const food = { id, name, emoji: "🍽️", keywords: [name], custom: true };
+  FOOD_BY_ID[id] = food;
+
+  const el = document.createElement("div");
+  el.className = "food custom selected"; // 추가 즉시 선택 상태
+  el.dataset.id = id;
+  el.innerHTML =
+    `<span class="remove" title="삭제" aria-label="삭제">×</span>` +
+    `<span class="emoji">${food.emoji}</span><span class="name"></span>`;
+  el.querySelector(".name").textContent = name; // 입력값은 textContent로 안전하게 표시
+  el.setAttribute("aria-pressed", "true");
+
+  // 카드 클릭/Enter → 선택 토글
+  makeActivatable(el, () => toggleFood(id, el));
+
+  // × 로 삭제 (카드 토글로 전파되지 않도록 중단)
+  const removeBtn = el.querySelector(".remove");
+  const removeFood = (e) => {
+    if (e) e.stopPropagation();
+    selected.delete(id);
+    delete FOOD_BY_ID[id];
+    el.remove();
+    if (customGrid.children.length === 0) customWrap.style.display = "none";
+    selCount.textContent = `선택된 음식 ${selected.size}개`;
+    updateBtn();
+    refreshResults();
+  };
+  removeBtn.setAttribute("role", "button");
+  removeBtn.tabIndex = 0;
+  removeBtn.addEventListener("click", removeFood);
+  removeBtn.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); e.stopPropagation(); removeFood(e); }
+  });
+
+  customGrid.appendChild(el);
+  customWrap.style.display = "block";
+  selected.add(id);
+  selCount.textContent = `선택된 음식 ${selected.size}개`;
+  customInput.value = "";
+  customInput.focus();
+  updateBtn();
+  refreshResults();
+}
+
+document.getElementById("addBtn").addEventListener("click", addCustomFood);
+customInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") { e.preventDefault(); addCustomFood(); }
+});
+
+document.getElementById("resetBtn").addEventListener("click", () => {
+  selected.clear();
+  document.querySelectorAll(".food.selected").forEach(e => e.classList.remove("selected"));
+  // 직접 추가한 음식 카드 제거
+  customGrid.innerHTML = "";
+  customWrap.style.display = "none";
+  Object.keys(FOOD_BY_ID).forEach(id => { if (FOOD_BY_ID[id].custom) delete FOOD_BY_ID[id]; });
+  selectedMeds.clear();
+  document.querySelectorAll(".med-chip.selected").forEach(e => e.classList.remove("selected"));
+  medList.querySelectorAll(".med-cat.open").forEach(w => { w.classList.remove("open"); const h = w.querySelector(".med-cat-head"); if (h) h.setAttribute("aria-expanded", "false"); });
+  updateCatCounts();
+  document.getElementById("medMeta").textContent = "";
+  document.getElementById("ageInput").value = "";
+  selCount.textContent = "선택된 음식 0개";
+  document.getElementById("results").innerHTML = "";
+  resultsShown = false;
+  copyBtn.disabled = true;
+  try { localStorage.removeItem(LS_KEY); } catch (e) {}
+  updateBtn();
+});
+
+checkBtn.addEventListener("click", () => showResults(true));
+document.getElementById("ageInput").addEventListener("input", () => { saveSettings(); refreshResults(); });
+
+const langBtn = document.getElementById("langBtn");
+langBtn.addEventListener("click", () => {
+  showEn = !showEn;
+  langBtn.textContent = showEn ? "🔤 한글로 보기" : "🔤 영어로 보기";
+  langBtn.classList.toggle("active", showEn);
+  // 약 칩 라벨 갱신
+  DATA.medications.forEach(m => {
+    const el = medList.querySelector('.med-chip[data-id="' + m.id + '"] .mname');
+    if (el) el.textContent = medLabel(m);
+  });
+  // 선택 요약 갱신
+  const meds = [...selectedMeds].map(x => DATA.medications.find(mm => mm.id === x));
+  document.getElementById("medMeta").textContent =
+    meds.length ? `선택된 약 ${meds.length}개: ${meds.map(medLabel).join(", ")}` : "";
+  // 결과가 떠 있으면 함께 갱신
+  refreshResults();
+});
+
+copyBtn.addEventListener("click", async () => {
+  if (!lastResultText) return;
+  const done = () => { copyBtn.textContent = "복사됨 ✓"; setTimeout(() => copyBtn.textContent = "📋 결과 복사", 1500); };
+  try {
+    await navigator.clipboard.writeText(lastResultText);
+    done();
+  } catch (e) {
+    const ta = document.createElement("textarea");
+    ta.value = lastResultText;
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand("copy"); } catch (_) {}
+    ta.remove();
+    done();
+  }
+});
+
+/* ===== 결과 계산 & 표시 ===== */
+const SEV_ORDER = { high:0, medium:1, low:2 };
+const SEV_LABEL = { high:"🔴 위험", medium:"🟡 주의", low:"🟢 참고" };
+
+/* 정확히 같으면 매칭, 부분일치는 2글자 이상 키워드에서만 허용해 '김치→김' 같은 오탐 방지 */
+function foodMatchesInteraction(food, it) {
+  return food.keywords.some(k =>
+    it.match_keywords.some(mk => {
+      if (mk === k) return true;
+      if (mk.length >= 2 && k.includes(mk)) return true;
+      if (k.length >= 2 && mk.includes(k)) return true;
+      return false;
+    })
+  );
+}
+
+function showResults(scroll = true) {
+  const meds = [...selectedMeds].map(id => DATA.medications.find(x => x.id === id));
+  const foods = [...selected].map(id => FOOD_BY_ID[id]);
+
+  // key: "<medId>::<interactionIndex>" -> {med, it, foods:[]}
+  const matchedMap = new Map();
+  const safeFoods = [];
+
+  foods.forEach(food => {
+    let hit = false;
+    meds.forEach(med => {
+      med.interactions.forEach((it, idx) => {
+        if (foodMatchesInteraction(food, it)) {
+          hit = true;
+          const key = med.id + "::" + idx;
+          if (!matchedMap.has(key)) matchedMap.set(key, { med, it, foods: [] });
+          matchedMap.get(key).foods.push(food);
+        }
+      });
+    });
+    if (!hit) safeFoods.push(food);
+  });
+
+  const matched = [...matchedMap.values()].sort(
+    (a, b) => SEV_ORDER[a.it.severity] - SEV_ORDER[b.it.severity]
+  );
+
+  const r = document.getElementById("results");
+  const medNames = meds.map(medLabel).join(", ");
+  let html = "";
+
+  if (matched.length === 0) {
+    html += `<div class="summary">✅ 선택하신 음식은 <b>${medNames}</b> 복용에 특별히 주의할 점이 없어요.</div>`;
+  } else {
+    html += `<div class="summary">⚠️ <b>${medNames}</b> 복용 시 주의가 필요한 음식이 ${matched.length}가지 있어요.</div>`;
+  }
+
+  const ageVal = document.getElementById("ageInput").value;
+  if (ageVal !== "" && Number(ageVal) >= 65) {
+    html += `<div class="elder-note">👵 만 65세 이상은 약물 상호작용에 더 민감할 수 있어요. 새로운 음식이나 건강식품을 드시기 전 의사·약사와 상담하시길 권합니다.</div>`;
+  }
+
+  matched.forEach(({ med, it, foods }) => {
+    html += `
+      <div class="result-card ${it.severity}">
+        <span class="badge ${it.severity}">${SEV_LABEL[it.severity]}</span>
+        <div class="med-tag">💊 ${medLabel(med)}</div>
+        <div class="title">${it.ingredient_label}</div>
+        <div class="effect">${it.effect}</div>
+        <div class="advice">💡 ${it.advice}</div>
+        <div class="chips">관련된 음식: ${foods.map(f => `<span class="chip">${f.emoji} ${escapeHtml(f.name)}</span>`).join("")}</div>
+      </div>`;
+  });
+
+  if (safeFoods.length > 0) {
+    html += `<div class="safe-box">✅ 함께 드셔도 괜찮아요: ${safeFoods.map(f => `<span class="chip">${f.emoji} ${escapeHtml(f.name)}</span>`).join("")}</div>`;
+  }
+
+  const timed = meds.filter(m => MED_TIMING[m.id]);
+  if (timed.length > 0) {
+    html += `<div class="timing-box"><div class="timing-title">💊 복용 타이밍 가이드</div>`;
+    timed.forEach(m => { html += `<div class="timing-item"><b>${medLabel(m)}</b> — ${MED_TIMING[m.id]}</div>`; });
+    html += `</div>`;
+  }
+
+  html += `<div class="disclaimer" style="margin-top:16px;">⚠️ ${DATA.disclaimer}</div>`;
+  r.innerHTML = html;
+
+  // 복사용 텍스트 생성
+  const SEV_TXT = { high: "위험", medium: "주의", low: "참고" };
+  let txt = `[약-음식 상호작용 체커 결과]\n복용 약: ${medNames}`;
+  if (ageVal !== "") txt += `\n나이: ${ageVal}세`;
+  if (ageVal !== "" && Number(ageVal) >= 65) txt += `\n※ 만 65세 이상은 상호작용에 더 민감할 수 있어요.`;
+  if (matched.length === 0) {
+    txt += `\n\n선택한 음식 중 특별히 주의할 항목이 없어요.`;
+  } else {
+    txt += `\n\n주의가 필요한 항목 ${matched.length}가지:`;
+    matched.forEach(({ med, it, foods }) => {
+      txt += `\n\n[${SEV_TXT[it.severity]}] ${medLabel(med)} · ${it.ingredient_label}`;
+      txt += `\n  - ${it.effect}`;
+      txt += `\n  - 조언: ${it.advice}`;
+      txt += `\n  - 해당 음식: ${foods.map(f => f.name).join(", ")}`;
+    });
+  }
+  if (safeFoods.length > 0) txt += `\n\n함께 드셔도 괜찮아요: ${safeFoods.map(f => f.name).join(", ")}`;
+  if (timed.length > 0) {
+    txt += `\n\n[복용 타이밍]`;
+    timed.forEach(m => { txt += `\n- ${medLabel(m)}: ${MED_TIMING[m.id]}`; });
+  }
+  txt += `\n\n※ 본 정보는 참고용이며, 전문가 상담을 대체하지 않습니다.`;
+  lastResultText = txt;
+  copyBtn.disabled = false;
+
+  resultsShown = true;
+  if (scroll) r.scrollIntoView({ behavior: "smooth", block: "start" });
+}
+</script>
+</body>
+</html>
